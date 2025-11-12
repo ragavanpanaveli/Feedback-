@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Form</title>
+</head>
+<body>
+  <h2>Feedback Form</h2>
+  <form id="feedbackForm">
+    <input type="text" id="name" placeholder="Enter your name" required><br><br>
+    <textarea id="feedback" placeholder="Enter your feedback" required></textarea><br><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script type="module">
+    // 👉 Step 1: Import Supabase client
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    // 👉 Step 2: Add your Supabase credentials
+    const SUPABASE_URL = "https://kiakdpmfgotfxszkphku.supabase.co"
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpYWtkcG1mZ290ZnhzemtwaGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MzIwNTIsImV4cCI6MjA3ODUwODA1Mn0.MLsNVjV_ktzfi7SJb1l7bX06SJLjUT49CfOIBCBfh5U"
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+    // 👉 Step 3: Handle form submit
+    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const name = document.getElementById("name").value
+      const feedback = document.getElementById("feedback").value
+
+      const { data, error } = await supabase
+        .from("feedback")
+        .insert([{ name, feedback }])
+
+      if (error) {
+        document.getElementById("status").textContent = "❌ Error: " + error.message
+      } else {
+        document.getElementById("status").textContent = "✅ Feedback submitted successfully!"
+        document.getElementById("feedbackForm").reset()
+      }
+    })
+  </script>
+</body>
+</html>
